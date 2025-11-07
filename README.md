@@ -12,6 +12,9 @@ This project implements a comprehensive medical image analysis pipeline for non-
 - Best performing model: Foundation Model features with clinical data (C-index = 0.7616)
 - Consensus model achieved 0.92 t-AUC with 97.6% sensitivity
 
+
+#### Workflow Schematic
+
 ![Workflow Schematic](workflow_schematic_v2.png)
 *Workflow schematic showing the pipeline stages: (A) Multi-region segmentation using nnUNet and TotalSegmentator, (B) Feature extraction from different ROIs, (C) Feature harmonization and selection, and (D) Survival prediction models integration.*
 
@@ -104,28 +107,41 @@ Extract handcrafted radiomics features (HRFs) and calculate CAC scores:
 
 ### 3. Survival Analysis
 
-Survival prediction models using different feature combinations:
-
-[`3_OS_prediction_CA_texture.ipynb`](codes/3_OS_prediction_CA_texture.ipynb)
-- Survival analysis using coronary artery texture features
-
-[`3_OS_prediction_CAC_scoring.ipynb`](codes/3_OS_prediction_CAC_scoring.ipynb)
-- Survival analysis using CAC scores
-
-[`3_OS_prediction_MN_texture.ipynb`](codes/3_OS_prediction_MN_texture.ipynb)
-- Survival analysis using mediastinal node texture features
-
-[`3_OS_prediction_MN_volume.ipynb`](codes/3_OS_prediction_MN_volume.ipynb)
-- Survival analysis using mediastinal node volumetric features
+Each survival analysis notebook loads pre-extracted radiomic or quantitative features for a specific region of interest (ROI), scales them using the corresponding scalar saved during model training, and then applies the pre-trained CoxPH model to compute patient-level risk scores. These risk scores can be used to estimate overall survival probabilities and generate Kaplan–Meier curves.
 
 [`3_OS_prediction_tumor_texture.ipynb`](codes/3_OS_prediction_tumor_texture.ipynb)
-- Survival analysis using tumor texture features
+- Loads NSCLC tumor texture features.
+- Normalizes using `models/tumor_texture/scalar.pkl`.
+- Generates risk scores from the CoxPH model for survival estimation.
 
 [`3_OS_prediction_tumor_volume.ipynb`](codes/3_OS_prediction_tumor_volume.ipynb)
-- Survival analysis using tumor volumetric features
+- Uses NSCLC tumor volume features.
+- Applies scaling via `models/tumor_volume/scalar.pkl`.
+- Computes survival risk scores and evaluates model performance.
 
-[`3_OS_prediction_whole_lung_texture.ipynb`](codes/3_OS_prediction_whole_lung_texture.ipynb)
-- Survival analysis using whole lung texture features (TODO: add models and scalars)
+[`3_OS_prediction_MN_texture.ipynb`](codes/3_OS_prediction_MN_texture.ipynb)
+- Uses mediastinal node texture features.
+- Scales features using `models/mediastinal_nodes_texture/scalar.pkl`.
+- Derives patient-level risk scores and survival curves.
+
+[`3_OS_prediction_MN_volume.ipynb`](codes/3_OS_prediction_MN_volume.ipynb)
+- Uses mediastinal node volumetric features.
+- Applies feature scaling with `models/mediastinal_nodes_volume/scalar.pkl`.
+- Computes CoxPH-based survival predictions and risk grouping.
+
+[`3_OS_prediction_CA_texture.ipynb`](codes/3_OS_prediction_CA_texture.ipynb)
+- Loads coronary artery texture features.
+- Applies the stored `StandardScaler` from `models/coronary_arteries_texture/scalar.pkl` for normalization.
+- Uses the pre-trained CoxPH model to calculate individual patient risk scores.
+
+[`3_OS_prediction_CAC_scoring.ipynb`](codes/3_OS_prediction_CAC_scoring.ipynb)
+- Loads coronary artery calcium (CAC) scores.
+- Normalizes the data using the scalar from `models/CAC_scoring/scalar.pkl`.
+- Computes survival risk scores using the trained CoxPH model.
+
+[TODO: Whole lung region survival model notebook and trained model to be added]
+
+
 
 
 ## Downloading Required Models
