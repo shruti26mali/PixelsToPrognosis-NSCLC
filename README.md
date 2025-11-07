@@ -88,27 +88,19 @@ Extract handcrafted radiomics features (HRFs) and calculate CAC scores:
 [`2_extract_coronary_arteries_HRFs.ipynb`](codes/2_extract_coronary_arteries_HRFs.ipynb)
 - Extracts texture and shape features from coronary arteries
 - Implements PyRadiomics feature extraction pipeline
-- Includes feature standardization and normalization
 
 [`2_extract_mediastinal_nodes_HRFs.ipynb`](codes/2_extract_mediastinal_nodes_HRFs.ipynb)
-- Computes radiomics features from segmented lymph nodes
-- Includes volumetric and textural analysis
-- Handles multiple node instances per patient
+- Extracts radiomics features from segmented lymph nodes
+- Implements PyRadiomics feature extraction pipeline
 
 [`2_extract_tumor_HRFs.ipynb`](codes/2_extract_tumor_HRFs.ipynb)
-- Extracts comprehensive tumor features
-- Implements advanced texture analysis
-- Includes shape and size measurements
-
-[`2_extract_whole_lung_HRFs.ipynb`](codes/2_extract_whole_lung_HRFs.ipynb)
-- Analyzes whole lung parenchyma features
-- Captures global lung characteristics
-- Includes density and texture patterns
+- Extracts radiomics features from segmented NSCLC 
+- Implements PyRadiomics feature extraction pipeline
 
 [`2_get_CAC_scores.ipynb`](codes/2_get_CAC_scores.ipynb)
 - Calculates Agatston calcium scores
 - Quantifies coronary calcification
-- Provides cardiovascular risk assessment
+
 
 ### 3. Survival Analysis
 
