@@ -1,6 +1,19 @@
 # CHAIMELEON - Lung cancer use case
 
-This project implements a comprehensive medical image analysis pipeline for lung cancer patients, including tumor segmentation, mediastinal node analysis, coronary artery analysis, and survival prediction.
+## Overview
+
+This project implements a comprehensive medical image analysis pipeline for non-small cell lung cancer (NSCLC) patients, focusing on multi-region feature extraction and survival prediction. The pipeline incorporates tumor segmentation, mediastinal node analysis, coronary artery analysis, and survival prediction techniques.
+
+[Read the full paper on arXiv](https://arxiv.org/abs/2505.17893)
+
+### Key Findings
+- Successfully integrated features from multiple regions of interest (ROIs) including whole lung, tumor, mediastinal nodes, and coronary arteries
+- Achieved improved survival prediction through harmonization techniques (ComBat, RKN)
+- Best performing model: Foundation Model features with clinical data (C-index = 0.7616)
+- Consensus model achieved 0.92 t-AUC with 97.6% sensitivity
+
+![Workflow Schematic](workflow_schematic_v2.png)
+*Workflow schematic showing the pipeline stages: (A) Multi-region segmentation using nnUNet and TotalSegmentator, (B) Feature extraction from different ROIs, (C) Feature harmonization and selection, and (D) Survival prediction models integration.*
 
 ## Project Structure
 
@@ -44,50 +57,84 @@ pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu12
 pip install nnunetv2
 ```
 
-4. Set up environment variables:
+4. Install TotalSegmentator:
 ```bash
-set nnUNet_raw=D:\path\to\project\nnUNet_raw
-set nnUNet_preprocessed=D:\path\to\project\nnUNet_preprocessed
-set nnUNet_results=D:\path\to\project\nnUNet_results
+pip install totalsegmentator
+```
+For detailed installation instructions and troubleshooting, visit the [TotalSegmentator GitHub repository](https://github.com/wasserth/TotalSegmentator?tab=readme-ov-file#installation).
+
+5. Set up environment variables:
+```bash
+set nnUNet_raw=\path\to\project\nnUNet_raw
+set nnUNet_preprocessed=\path\to\project\nnUNet_preprocessed
+set nnUNet_results=\path\to\project\nnUNet_results
 ```
 
 ## Usage
 
 ### 1. Image Preprocessing and Segmentation
 
-Run `1_nnUNetv2_predict.ipynb` to:
-- Prepare input images for nnUNet format
-- Perform lung tumor segmentation
-- Segment mediastinal nodes
-- Extract coronary arteries
-- Segment whole lung regions
+[`1_nnUNetv2_predict.ipynb`](codes/1_nnUNetv2_predict.ipynb)
+- Preprocesses CT images into nnUNet-compatible format
+- Performs automatic lung tumor segmentation using nnUNet (Dataset800_LUNGTUMOR)
+- Segments mediastinal nodes using nnUNet (Dataset017_LNQ2023)
+- Extracts coronary arteries using TotalSegmentator
+- Generates segmentation masks for all regions of interest
 
 ### 2. Feature Extraction
 
-Run the following notebooks to extract features:
-- `2_extract_coronary_arteries_HRFs.ipynb`: Extract coronary artery features
-- `2_extract_mediastinal_nodes_HRFs.ipynb`: Extract lymph node features
-- `2_extract_tumor_HRFs.ipynb`: Extract tumor features
-- `2_extract_whole_lung_HRFs.ipynb`: Extract lung parenchyma features
-- `2_get_CAC_scores.ipynb`: Calculate coronary artery calcium scores
+Extract handcrafted radiomics features (HRFs) and calculate CAC scores:
+
+[`2_extract_coronary_arteries_HRFs.ipynb`](codes/2_extract_coronary_arteries_HRFs.ipynb)
+- Extracts texture and shape features from coronary arteries
+- Implements PyRadiomics feature extraction pipeline
+- Includes feature standardization and normalization
+
+[`2_extract_mediastinal_nodes_HRFs.ipynb`](codes/2_extract_mediastinal_nodes_HRFs.ipynb)
+- Computes radiomics features from segmented lymph nodes
+- Includes volumetric and textural analysis
+- Handles multiple node instances per patient
+
+[`2_extract_tumor_HRFs.ipynb`](codes/2_extract_tumor_HRFs.ipynb)
+- Extracts comprehensive tumor features
+- Implements advanced texture analysis
+- Includes shape and size measurements
+
+[`2_extract_whole_lung_HRFs.ipynb`](codes/2_extract_whole_lung_HRFs.ipynb)
+- Analyzes whole lung parenchyma features
+- Captures global lung characteristics
+- Includes density and texture patterns
+
+[`2_get_CAC_scores.ipynb`](codes/2_get_CAC_scores.ipynb)
+- Calculates Agatston calcium scores
+- Quantifies coronary calcification
+- Provides cardiovascular risk assessment
 
 ### 3. Survival Analysis
 
-The following notebooks perform survival analysis using different feature sets:
-- `3_OS_prediction_CA_texture.ipynb`: Using coronary artery features
-- `3_OS_prediction_CAC_scoring.ipynb`: Using calcium scores
-- `3_OS_prediction_MN_texture.ipynb`: Using mediastinal node features
-- `3_OS_prediction_MN_volume.ipynb`: Using node volumetric features
-- `3_OS_prediction_tumor_texture.ipynb`: Using tumor texture features
-- `3_OS_prediction_tumor_volume.ipynb`: Using tumor volumetric features
-- `3_OS_prediction_whole_lung_texture.ipynb`: Using lung parenchyma features
+Survival prediction models using different feature combinations:
 
-## Data Files
+[`3_OS_prediction_CA_texture.ipynb`](codes/3_OS_prediction_CA_texture.ipynb)
+- Survival analysis using coronary artery texture features
 
-- `test_radiomics_CA.csv`: Coronary artery radiomics features
-- `test_radiomics_CAC_scores.csv`: Coronary calcium scores
-- `test_radiomics_lung_tumor.csv`: Tumor radiomics features
-- `test_radiomics_MN.csv`: Mediastinal node features
+[`3_OS_prediction_CAC_scoring.ipynb`](codes/3_OS_prediction_CAC_scoring.ipynb)
+- Survival analysis using CAC scores
+
+[`3_OS_prediction_MN_texture.ipynb`](codes/3_OS_prediction_MN_texture.ipynb)
+- Survival analysis using mediastinal node texture features
+
+[`3_OS_prediction_MN_volume.ipynb`](codes/3_OS_prediction_MN_volume.ipynb)
+- Survival analysis using mediastinal node volumetric features
+
+[`3_OS_prediction_tumor_texture.ipynb`](codes/3_OS_prediction_tumor_texture.ipynb)
+- Survival analysis using tumor texture features
+
+[`3_OS_prediction_tumor_volume.ipynb`](codes/3_OS_prediction_tumor_volume.ipynb)
+- Survival analysis using tumor volumetric features
+
+[`3_OS_prediction_whole_lung_texture.ipynb`](codes/3_OS_prediction_whole_lung_texture.ipynb)
+- Survival analysis using whole lung texture features (TODO: add models and scalars)
+
 
 ## Downloading Required Models
 
@@ -122,7 +169,7 @@ The project uses two specific nnUNet models for segmentation:
    - Extract to: `nnUNet_results/Dataset800_LUNGTUMOR/`
    - Used in tumor prediction with:
      ```bash
-     nnUNetv2_predict -i INPUT_DIR -o OUTPUT_DIR -d 800 -c 3d_fullres -chk checkpoint_best.pth
+     nnUNetv2_predict -i INPUT_DIR -o OUTPUT_DIR -d 800 -c 3d_fullres
      ```
 
 ### Installation Steps:
