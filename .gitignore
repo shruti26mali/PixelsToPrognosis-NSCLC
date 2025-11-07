@@ -1,10 +1,16 @@
-# Large model files and data
+# Ignore large model files and data
 models/
 nnUNet_results/
 nnUNet_raw/
 nnUNet_preprocessed/
 raw_images/
 preds_*/
+
+# Ignore large medical data
+*.nii.gz
+*.dcm
+*.zip
+*.csv
 
 # Python
 __pycache__/
