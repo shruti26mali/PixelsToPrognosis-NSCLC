@@ -1,0 +1,45 @@
+# Large model files and data
+models/
+nnUNet_results/
+nnUNet_raw/
+nnUNet_preprocessed/
+raw_images/
+preds_*/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# Environment
+.env
+.venv
+venv/
+ENV/
+
+# Operating System
+.DS_Store
+Thumbs.db
